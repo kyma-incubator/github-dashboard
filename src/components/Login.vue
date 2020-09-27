@@ -17,7 +17,6 @@ export default {
         `https://github.com/login/oauth/authorize?client_id=${import.meta.env.VITE_GITHUB_APP_ID}`,
         `scope=read:user`,
         `redirect_uri=${rootUrl}${authorizePath}`,
-        `state=${new Date().getTime()}`,
         `allow_signup=false`
       ].join('&')
     return {
