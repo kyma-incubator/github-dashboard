@@ -1975,14 +1975,15 @@ vary@^1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
-villus@^1.0.0-alpha.4:
-  version "1.0.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/villus/-/villus-1.0.0-alpha.4.tgz#bcef8c7223ceeadb51a62e620932e65e6a4c587a"
-  integrity sha512-vUldNiUWR1I+atgSed+XuZ0hWaevwZp7C2lRT62qhqVzsPyC2OzYH+uoTzJbYFlNOoYHme/xBuMiX550Z/BuYw==
+villus@^1.0.0-beta.0:
+  version "1.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/villus/-/villus-1.0.0-beta.0.tgz#32446ebffcdffa7f1e3ab6607b5578056c2b73f1"
+  integrity sha512-hq4NFvhwqKojxuxh5rUdcZoHp1lNyPqAU6/uslSrhdClDzZHQI2TsaN+wruksOTGnJGokEyEGV5JrOFXaz90kA==
   dependencies:
     fast-json-stable-stringify "^2.1.0"
+    vue-demi "^0.3.3"
 
-vite@^1.0.0-rc.1:
+vite@^1.0.0-rc.4:
   version "1.0.0-rc.4"
   resolved "https://registry.yarnpkg.com/vite/-/vite-1.0.0-rc.4.tgz#210106136861b231704e6381ac9eb1bcd655d4f0"
   integrity sha512-D9gpKKaE2U0YpIxNrSn+nlFPBT0sfg68Y1EReYW8YHMhbNFcxwS7RZIa1W/8Pq6yDfVRAhbOZNijv1mLG5pCEg==
@@ -2037,6 +2038,11 @@ vite@^1.0.0-rc.1:
     slash "^3.0.0"
     vue "^3.0.0-rc.5"
     ws "^7.2.3"
+
+vue-demi@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/vue-demi/-/vue-demi-0.3.3.tgz#27d7ae33e1d82752418ecfded60e625c5cc81866"
+  integrity sha512-/CvXJUp7e41C/jS5ZgflMQgkY2qFX1ZkZq1kYwYH5RCC9gGy1vgvjsldtQlVORaAUt55+k/mQIUnUKNrLosoIw==
 
 vue-router@^4.0.0-beta.11:
   version "4.0.0-beta.11"

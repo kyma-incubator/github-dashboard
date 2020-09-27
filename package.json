@@ -2,18 +2,18 @@
   "name": "github-stats",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build"
+    "dev": "./node_modules/.bin/vite --debug",
+    "build": "./node_modules/.bin/vite build"
   },
   "dependencies": {
     "graphql": "^15.3.0",
-    "villus": "^1.0.0-alpha.4",
+    "villus": "^1.0.0-beta.0",
     "vue": "^3.0.0-rc.1",
     "vue-router": "^4.0.0-beta.11",
     "vuex": "^4.0.0-beta.4"
   },
   "devDependencies": {
     "@vue/compiler-sfc": "^3.0.0-rc.1",
-    "vite": "^1.0.0-rc.1"
+    "vite": "^1.0.0-rc.4"
   }
 }
