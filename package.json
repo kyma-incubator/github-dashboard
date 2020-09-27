@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "graphql": "^15.3.0",
-    "villus": "^1.0.0-beta.0",
+    "netlify-auth-providers": "^1.0.0-alpha5",
     "vue": "^3.0.0-rc.1",
     "vue-router": "^4.0.0-beta.11",
     "vuex": "^4.0.0-beta.4"

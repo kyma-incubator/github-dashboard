@@ -25,27 +25,13 @@
 </template>
 
 <script>
-import { useClient } from 'villus';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 export default {
   name: "App",
   setup() {
     const store = useStore();
-    const token = computed(() => store.state.token);
     const isAuthenticated = computed(() => store.getters.isAuthenticated);
-    useClient({
-      url: 'https://api.github.com/graphql',
-      context: () => {
-        return {
-          fetchOptions: {
-            headers: {
-              Authorization: `Bearer ${token.value}`
-            }
-          }
-        };
-      }      
-    });
     return {
       isAuthenticated
     }

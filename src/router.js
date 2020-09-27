@@ -36,23 +36,6 @@ const router = createRouter({
       },      
     },    
     {
-      path: '/authorize',
-      name: 'Authorize',
-      meta: { requiresAuth: false },
-      beforeEnter: async (to, from) => {
-        if (to.query.code) {
-          try {
-            await store.dispatch('continueOAuth', to.query.code);
-            return { name: 'Home' };
-          } catch (error) {
-            return { name: 'Login' };
-          }
-        } else {
-          return { name: 'Home' };
-        }
-      },
-    },
-    {
       path: '/:pathMatch(.*)',
       name: '404',
       component: defineAsyncComponent(() => import('./components/404.vue')),
