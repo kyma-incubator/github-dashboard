@@ -2,7 +2,10 @@ import { createStore } from 'vuex';
 import Authenticator from './util/netlify-login.js';
 import router from './router.js';
 import { ghql } from './util/ghql.js';
-import { userProfile, rateLimit } from './util/gqlTags.js';
+import {
+  externalContributors,
+  currentUser,
+} from './util/gqlTags.js';
 
 const store = createStore({
   state() {
@@ -10,6 +13,7 @@ const store = createStore({
       counter: 0,
       token: window.localStorage.getItem('token'),
       user: window.localStorage.getItem('user'),
+      externalContributors: null,
     };
   },
   mutations: {
@@ -23,6 +27,9 @@ const store = createStore({
     },
     setCurrentUser: (state, user) => {
       state.user = user;
+    },
+    setExternalContributorsr: (state, externalContributors) => {
+      state.externalContributors = externalContributors;
     },
   },
   actions: {
@@ -44,20 +51,16 @@ const store = createStore({
       );
     },
     async getCurrentUser(context) {
-      console.log('dispatching getCurrentUser', new Date().getTime());
-      ghql(
-        `
-      {
-        ${rateLimit}
-        viewer {
-          ${userProfile}
-        }
-      }
-      `,
+      ghql(currentUser,
         store.state.token
       ).then(({ viewer }) => {
         context.commit('setCurrentUser', viewer);
       });
+    },
+    async getExternalContributors(context) {
+      ghql(externalContributors('org:kyma-project org:kyma-incubator is:pr',null), store.state.token).then(({ search }) => {
+        context.commit('setExternalContributorsr', search.nodes);
+      }).catch(error => console.error(error));
     },
     increaseCounter(context, payload) {
       context.commit('increaseCounter', payload);
