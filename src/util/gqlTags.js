@@ -1,110 +1,100 @@
-const pageInfo = `
-pageInfo {
-  startCursor
-  endCursor
-  hasNextPage
-}`;
-const rateLimit = `
-rateLimit {
-  cost
-  nodeCount
-  remaining
-}
-`;
-const userProfile = `
-id
-name
-createdAt
-email
-twitterUsername
-organizations {
-  totalCount
-}
-repositories {
-  totalCount
-}
-followers {
-  totalCount
-}
-following {
-  totalCount
-}
-company
-avatarUrl(size: 100)
-`;
-const pullRequestFields = `
-id
-PullRequestState:state
-createdAt
-repository {
-  owner {
-    id
-    login
-  }
-}
-author {
-  login
-  ... on User {
-    ${userProfile}
-  }
-}
-title
-url
-`;
-const issueFields = `
-id
-IssueState: state
-createdAt
-repository {
-  owner {
-    id
-    login
-  }
-}
-author {
-  login
-  ... on User {
-    ${userProfile}
-  }
-}
-title
-url
-`;
+import {
+  pageInfoFragment,
+  rateLimitFragment,
+  userOverviewFragment,
+  pullRequestFragment,
+  issueFragment,
+} from './gqlFragments.js';
+
+import { sanitizeKey } from "./gh-gql";
+
 function externalContributors(q, cursor) {
   return `
-{
+query {
+  rateLimit {
+    ...rateLimitFragment
+  }
   search(type: ISSUE, query: "${q}", first: 100, after: ${cursor}) {
     nodes {
       __typename
       ... on PullRequest {
-        ${pullRequestFields}
+        ...pullRequestFragment
       }
       ... on Issue {
-        ${issueFields}
+        ...issueFragment
       }
     }
     issueCount
-    ${pageInfo}
+    pageInfo {
+      ...pageInfoFragment
+    }
   }
-  ${rateLimit}
 }
+${userOverviewFragment}
+${pullRequestFragment}
+${issueFragment}
+${pageInfoFragment}
+${rateLimitFragment}
 `;
 }
-const currentUser = `
-{
-  viewer {
-    ${userProfile}
-  }
-  ${rateLimit}
-}
-`;
 
-export {
-  rateLimit,
-  pageInfo,
-  userProfile,
-  pullRequestFields,
-  issueFields,
-  externalContributors,
-  currentUser,
-};
+function initData(orgs) {
+  return `
+  query {
+    rateLimit {
+      ...rateLimitFragment
+    }
+    viewer {
+      ...userOverviewFragment
+    }
+    ${orgs.map(organization => `
+    ${sanitizeKey(organization)}: organization(login: "${organization}") {
+      id
+      name
+      login
+      avatarUrl
+      url
+      membersWithRole {
+        totalCount
+      }
+      repositories {
+        totalCount
+      }
+    }
+    `).join('\n')}
+    
+  }
+  ${userOverviewFragment}
+  ${rateLimitFragment}
+  `
+} ;
+
+function targetOrgMembers(orgs) {
+  return `
+  query {
+    rateLimit {
+      ...rateLimitFragment
+    }
+    ${Object.keys(orgs).map(org => `
+    ${sanitizeKey(org)}: organization(login: "${org}" ) {
+      id
+      login
+      membersWithRole(first: ${orgs[org].membersWithRole.totalCount > 100 ? 100: orgs[org].membersWithRole.totalCount} ${orgs[org].membersWithRole.pageInfo && orgs[org].membersWithRole.pageInfo.hasNextPage ? `after: "${orgs[org].membersWithRole.pageInfo.endCursor}"` : ''}) {
+        totalCount
+        pageInfo {
+          ...pageInfoFragment
+        }
+        members: nodes {
+          ...userOverviewFragment
+        }
+      }
+    }
+    `).join('\n')}
+    
+  }
+  ${pageInfoFragment}
+  ${userOverviewFragment}
+  ${rateLimitFragment}
+  `
+} ;
+export { externalContributors, targetOrgMembers, initData };

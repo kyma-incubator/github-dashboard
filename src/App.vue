@@ -1,19 +1,26 @@
 <template>
-  <nav class="bg-white px-8 pt-2 shadow-md">
-    <navigation></navigation>
-  </nav>
-  <div class="bg-white px-8 pt-2 shadow-md mt-10">
-    <router-view></router-view>
-  </div>
+  <component :is="layout">
+    <router-view />
+  </component>
 </template>
 
-<script>
-import navigation from "./components/Navigation.vue";
-export default {
-  components: {
-    navigation,
+<script lang="ts">
+import { defineComponent, ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
+
+const defaultLayout = 'default';
+
+export default defineComponent({
+  setup() {
+    const { currentRoute } = useRouter();
+
+    const layout = computed(
+      () => `${currentRoute.value.meta.layout || defaultLayout}-layout`
+    );
+
+    return {
+      layout,
+    };
   },
-  name: "App",
-  setup() {},
-};
+});
 </script>

@@ -11,12 +11,12 @@ function hash(str) {
 }
 function setCache(queryHash, payload) {
   cache[queryHash] = payload;
-  window.sessionStorage.setItem('graphqlCache', JSON.stringify(cache))
+  window.sessionStorage.setItem('graphqlCache', JSON.stringify(cache));
 }
-function ghql(query, AuthorizationToken) {
+function gqlFetch(query, AuthorizationToken, cacheCall = true) {
   const body = JSON.stringify({ query });
   const queryHash = hash(body);
-  if (cache[queryHash]) {
+  if (cacheCall && cache[queryHash]) {
     return Promise.resolve(cache[queryHash]);
   } else {
     return new Promise((resolve, reject) => {
@@ -42,4 +42,8 @@ function ghql(query, AuthorizationToken) {
     });
   }
 }
-export { ghql };
+
+function sanitizeKey(key) {
+  return  key.replace('-', '_');
+}
+export { gqlFetch, sanitizeKey };

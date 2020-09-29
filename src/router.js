@@ -8,26 +8,38 @@ const router = createRouter({
     {
       path: '/',
       name: 'Home',
-      component: defineAsyncComponent(() => import('./components/Home.vue')),
+      component: defineAsyncComponent(() => import('./views/Home.vue')),
       meta: { requiresAuth: true },
     },
     {
+      path: '/profile',
+      name: 'Profile',
+      component: defineAsyncComponent(() => import('./views/Profile.vue')),
+      meta: { requiresAuth: true },
+    },    
+    {
+      path: '/team',
+      name: 'Team',
+      component: defineAsyncComponent(() => import('./views/Team.vue')),
+      meta: { requiresAuth: true },
+    },        
+    {
       path: '/externals',
       name: 'ExternalContributors',
-      component: defineAsyncComponent(() => import('./components/ExternalContributors.vue')),
+      component: defineAsyncComponent(() => import('./views/ExternalContributors.vue')),
       meta: { requiresAuth: true },
     },
     {
       path: '/about',
       name: 'About',
-      component: defineAsyncComponent(() => import('./components/PageA.vue')),
+      component: defineAsyncComponent(() => import('./views/PageA.vue')),
       meta: { requiresAuth: false },
     },
     {
       path: '/login',
       name: 'Login',
-      component: defineAsyncComponent(() => import('./components/Login.vue')),
-      meta: { requiresAuth: false },
+      component: defineAsyncComponent(() => import('./views/Login.vue')),
+      meta: { requiresAuth: false, layout: "empty" },
     },
     {
       path: '/logout',
@@ -41,7 +53,7 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)',
       name: '404',
-      component: defineAsyncComponent(() => import('./components/404.vue')),
+      component: defineAsyncComponent(() => import('./views/404.vue')),
       meta: { requiresAuth: false },
     },
   ],

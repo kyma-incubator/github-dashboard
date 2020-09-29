@@ -1,34 +1,55 @@
 import { createStore } from 'vuex';
 import Authenticator from './util/netlify-login.js';
 import router from './router.js';
-import { ghql } from './util/ghql.js';
+import { gqlFetch, sanitizeKey } from './util/gh-gql.js';
 import {
   externalContributors,
-  currentUser,
+  targetOrgMembers,
+  initData,
 } from './util/gqlTags.js';
 
 const store = createStore({
   state() {
     return {
-      counter: 0,
+      menuOpen: false,
       token: window.localStorage.getItem('token'),
-      user: window.localStorage.getItem('user'),
+      viewer: null,
       externalContributors: null,
+      targetOrgs: { 'kyma-project': null, 'kyma-incubator': null },
     };
   },
   mutations: {
-    increaseCounter(state, payload) {
-      state.counter = state.counter + payload || 1;
-      console.log('State:', state);
+    setMenu: (state, menuState) => {
+      state.menuOpen = menuState;
     },
     setToken: (state, token) => {
       state.token = token;
       window.localStorage.setItem('token', token);
     },
-    setCurrentUser: (state, user) => {
-      state.user = user;
+    setViewer: (state, viewer) => {
+      state.viewer = viewer;
     },
-    setExternalContributorsr: (state, externalContributors) => {
+    setTargetOrgs: (state, orgs) => {
+      orgs.map((org) => {
+        state.targetOrgs[org.login] = org;
+      });
+    },
+    updateTargetOrgs: (state, orgs) => {
+      orgs.map((org) => {
+        state.targetOrgs[org.login]['membersWithRole'].pageInfo =
+          org['membersWithRole'].pageInfo;
+        if (state.targetOrgs[org.login]['membersWithRole'].members) {
+          state.targetOrgs[org.login]['membersWithRole'].members = [
+            ...state.targetOrgs[org.login]['membersWithRole'].members,
+            ...org['membersWithRole'].members,
+          ];
+        } else {
+          state.targetOrgs[org.login]['membersWithRole'].members =
+            org['membersWithRole'].members;
+        }
+      });
+    },
+    setExternalContributors: (state, externalContributors) => {
       state.externalContributors = externalContributors;
     },
   },
@@ -38,43 +59,106 @@ const store = createStore({
         site_id: `${import.meta.env.VITE_NETLIFY_APP_ID || null}`,
       });
       authenticator.authenticate(
-        { provider: 'github', scope: 'read:user' },
+        { provider: 'github', scope: 'read:user, read:org' },
         function (err, data) {
           if (err) {
             console.error(data);
           }
           const { token } = data;
           context.commit('setToken', token);
-          context.dispatch('getCurrentUser');
+          context.dispatch('getInitData');
           router.push({ name: 'Home' });
         }
       );
     },
-    async getCurrentUser(context) {
-      ghql(currentUser,
-        store.state.token
-      ).then(({ viewer }) => {
-        context.commit('setCurrentUser', viewer);
+    async getInitData(context) {
+      const orgsKeys = Object.keys(context.state.targetOrgs);
+      gqlFetch(initData(orgsKeys), store.state.token).then((result) => {
+        const orgs = [];
+        // we need to do this becasue graphql does not accept '-' in the key
+        orgsKeys.map((key) => {
+          const sanitizedKey = sanitizeKey(key);
+          let selectedOrg = result[sanitizedKey];
+          orgs.push(selectedOrg);
+        });
+        context.commit('setViewer', result.viewer);
+        context.commit('setTargetOrgs', orgs);
+        context.dispatch('getTargetOrgMembers', store.state.targetOrgs);
       });
     },
-    async getExternalContributors(context) {
-      ghql(externalContributors('org:kyma-project org:kyma-incubator is:pr',null), store.state.token).then(({ search }) => {
-        context.commit('setExternalContributorsr', search.nodes);
-      }).catch(error => console.error(error));
+    async getTargetOrgMembers(context) {
+      const orgsKeys = Object.keys(context.state.targetOrgs);
+      let endCursor = null; // used to track pagination through the results
+      function hasNextPage() {
+        let hasNextPage = false;
+        orgsKeys.map((key) => {
+          let selectedOrg = context.state.targetOrgs[key];
+          if (
+            !hasNextPage &&
+            selectedOrg.membersWithRole.pageInfo &&
+            selectedOrg.membersWithRole.pageInfo.hasNextPage === false
+          ) {
+            hasNextPage = false;
+          } else {
+            hasNextPage = true;
+          }
+        });
+        return hasNextPage;
+      }
+      if (hasNextPage()) {
+        await gqlFetch(
+          targetOrgMembers(context.state.targetOrgs),
+          store.state.token
+        )
+          .then(async (result) => {
+            const orgs = [];
+            // we need to do this becasue graphql does not accept '-' in the key
+            orgsKeys.map((key) => {
+              const sanitizedKey = sanitizeKey(key);
+              let selectedOrg = result[sanitizedKey];
+              orgs.push(selectedOrg);
+            });
+            context.commit('updateTargetOrgs', orgs);
+            if (hasNextPage()) await context.dispatch('getTargetOrgMembers');
+          })
+          .catch((error) => console.error(error));
+      }
     },
-    increaseCounter(context, payload) {
-      context.commit('increaseCounter', payload);
+    getExternalContributors(context) {
+      gqlFetch(
+        externalContributors('org:kyma-project org:kyma-incubator is:pr', null),
+        store.state.token
+      )
+        .then(({ search }) => {
+          context.commit('setExternalContributors', search.nodes);
+        })
+        .catch((error) => console.error(error));
     },
-    logout: ({ commit }) => {
+
+    logout: ({ commit, state }) => {
       commit('setToken', null);
-      commit('setCurrentUser', null);
+      commit('setViewer', null);
+      commit('setExternalContributors', null);
       window.localStorage.removeItem('token');
-      window.localStorage.removeItem('user');
+      window.sessionStorage.removeItem('graphqlCache');
     },
   },
   getters: {
     isAuthenticated: (state) => !!state.token,
-    getCurrentUser: (state) => state.user,
+    allMembers: (state) => {
+      const orgsKeys = Object.keys(state.targetOrgs);
+      let concatResult = [];
+      let result = {};
+      orgsKeys.map((key) => {
+        let selectedOrg = state.targetOrgs[key];
+        if (selectedOrg && selectedOrg.membersWithRole.members) {
+          concatResult = [ ...concatResult, ...selectedOrg.membersWithRole.members]
+        }
+      }); 
+      concatResult =concatResult.sort((a,b)=> b.followers.totalCount - a.followers.totalCount );
+      concatResult.map(el => result[el.login] = el);
+      return result;   
+    }
   },
 });
 export default store;
