@@ -97,4 +97,40 @@ function targetOrgMembers(orgs) {
   ${rateLimitFragment}
   `
 } ;
-export { externalContributors, targetOrgMembers, initData };
+
+function reposOverview(orgs) {
+  return `
+  query {
+    rateLimit {
+      ...rateLimitFragment
+    }
+    ${Object.keys(orgs).map(org => `
+    ${sanitizeKey(org)}: organization(login: "${org}" ) {
+      id
+      login
+      repositories(first: ${orgs[org].repositories.totalCount}) {
+        totalCount
+        pageInfo {
+          ...pageInfoFragment
+        }
+        repos:nodes {
+          id
+          name
+          stargazerCount
+          openPullRequests: pullRequests(states: OPEN) {
+            totalCount
+          }
+          openIsues: issues(states: OPEN) {
+            totalCount
+          }        
+        }
+      }
+    }
+    `).join('\n')}
+    
+  }
+  ${pageInfoFragment}
+  ${rateLimitFragment}
+  `
+} ;
+export { externalContributors, targetOrgMembers, reposOverview, initData };
