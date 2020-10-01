@@ -5,6 +5,7 @@ import { gqlFetch, sanitizeKey } from './util/gh-gql.js';
 import {
   externalContributors,
   targetOrgMembers,
+  reposOverview,
   initData,
 } from './util/gqlTags.js';
 
@@ -36,16 +37,27 @@ const store = createStore({
     },
     updateTargetOrgs: (state, orgs) => {
       orgs.map((org) => {
-        state.targetOrgs[org.login]['membersWithRole'].pageInfo =
-          org['membersWithRole'].pageInfo;
-        if (state.targetOrgs[org.login]['membersWithRole'].members) {
-          state.targetOrgs[org.login]['membersWithRole'].members = [
-            ...state.targetOrgs[org.login]['membersWithRole'].members,
-            ...org['membersWithRole'].members,
-          ];
-        } else {
-          state.targetOrgs[org.login]['membersWithRole'].members =
-            org['membersWithRole'].members;
+        let currentMembersWithRole =
+          state.targetOrgs[org.login]['membersWithRole'];
+        const newMembersWithRoles = org['membersWithRole'];
+        if (newMembersWithRoles && newMembersWithRoles.members) {
+          if (currentMembersWithRole.members) {
+            currentMembersWithRole.members = [...currentMembersWithRole.members, ...newMembersWithRoles.members];
+            currentMembersWithRole.pageInfo = newMembersWithRoles.pageInfo;
+          } else {
+            state.targetOrgs[org.login]['membersWithRole'] = org['membersWithRole']
+          }
+        }
+        let currentRepositories = state.targetOrgs[org.login]['repositories'];
+        const newRepositories = org['repositories'];
+
+        if (newRepositories && newRepositories.repos) {
+          if (currentRepositories.repos) {
+            currentRepositories.repos = [...currentRepositories.repos, ...newRepositories.repos];
+            currentRepositories.pageInfo = newRepositories.pageInfo
+          } else {
+            state.targetOrgs[org.login]['repositories'] = org['repositories'];
+          }
         }
       });
     },
@@ -84,6 +96,7 @@ const store = createStore({
         context.commit('setViewer', result.viewer);
         context.commit('setTargetOrgs', orgs);
         context.dispatch('getTargetOrgMembers', store.state.targetOrgs);
+        context.dispatch('getReposOverview', store.state.targetOrgs);
       });
     },
     async getTargetOrgMembers(context) {
@@ -134,6 +147,21 @@ const store = createStore({
         })
         .catch((error) => console.error(error));
     },
+    getReposOverview(context) {
+      gqlFetch(reposOverview(context.state.targetOrgs), store.state.token)
+        .then((result) => {
+          const orgsKeys = Object.keys(context.state.targetOrgs);
+          const orgs = [];
+          // we need to do this becasue graphql does not accept '-' in the key
+          orgsKeys.map((key) => {
+            const sanitizedKey = sanitizeKey(key);
+            let selectedOrg = result[sanitizedKey];
+            orgs.push(selectedOrg);
+          });
+          context.commit('updateTargetOrgs', orgs);
+        })
+        .catch((error) => console.error(error));
+    },
 
     logout: ({ commit, state }) => {
       commit('setToken', null);
@@ -152,13 +180,18 @@ const store = createStore({
       orgsKeys.map((key) => {
         let selectedOrg = state.targetOrgs[key];
         if (selectedOrg && selectedOrg.membersWithRole.members) {
-          concatResult = [ ...concatResult, ...selectedOrg.membersWithRole.members]
+          concatResult = [
+            ...concatResult,
+            ...selectedOrg.membersWithRole.members,
+          ];
         }
-      }); 
-      concatResult =concatResult.sort((a,b)=> b.followers.totalCount - a.followers.totalCount );
-      concatResult.map(el => result[el.login] = el);
-      return result;   
-    }
+      });
+      concatResult = concatResult.sort(
+        (a, b) => b.followers.totalCount - a.followers.totalCount
+      );
+      concatResult.map((el) => (result[el.login] = el));
+      return result;
+    },
   },
 });
 export default store;
