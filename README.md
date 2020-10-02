@@ -6,6 +6,22 @@ This dashboard is used to visualize the status of our Kyma Projects, and it's fo
 
 This is a Vuejs porjects using Github login to retrieve a working token and avoid using a common shared token to avoid hitting the Girthub API limits.
 
+## Developer Guild
+
+First you have to install dependencies. You can use `yarn` or `npm`
+
+```sh
+yarn 
+```
+
+to run on local
+
+```sh
+yarn run dev
+
+```
+
+
 ## Build project
 
 ```sh
