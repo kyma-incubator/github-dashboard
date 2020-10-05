@@ -92,7 +92,7 @@ import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { computed } from "vue";
 
-import NotificationIcon from "./Icon/NotificationIcon.vue";
+import { NotificationIcon } from "./Icons";
 
 export default defineComponent({
   components: {

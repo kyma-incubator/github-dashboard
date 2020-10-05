@@ -96,8 +96,7 @@
 import { useStore } from "vuex";
 import { computed } from "vue";
 import { defineComponent, ref } from "vue";
-import LogoIcon from "./Icon/LogoIcon.vue";
-import PieIcon from "./Icon/PieIcon.vue";
+import { LogoIcon, PieIcon } from "./Icons";
 
 export default defineComponent({
   name: "Sidebar",
