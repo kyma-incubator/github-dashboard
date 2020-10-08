@@ -1,0 +1,16 @@
+{
+  "name": "build",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "download": "export SERVICE_ACCOUNT=`cat service_account.json` && node index.js ../public/results.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/bigquery": "^5.3.0"
+  }
+}
