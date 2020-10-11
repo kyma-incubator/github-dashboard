@@ -14,9 +14,7 @@
   >
     <div class="flex items-center justify-center mt-8">
       <div class="flex items-center">
-        <LogoIcon />
-
-        <span class="text-white text-2xl mx-2 font-semibold">GH Dashboard</span>
+        <span class="text-white text-2xl font-semibold">GH Dashboard</span>
       </div>
     </div>
 
