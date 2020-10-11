@@ -17,7 +17,6 @@ export default defineComponent({
     const layout = computed(
       () => `${currentRoute.value.meta.layout || defaultLayout}-layout`
     );
-
     return {
       layout,
     };

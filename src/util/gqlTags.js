@@ -2,9 +2,10 @@ import {
   pageInfoFragment,
   rateLimitFragment,
   userOverviewFragment,
+  shortUserOverviewFragment,
   pullRequestFragment,
   issueFragment,
-} from './gqlFragments.js';
+} from "./gqlFragments.js";
 
 import { sanitizeKey } from "./gh-gql";
 
@@ -15,24 +16,43 @@ query {
     ...rateLimitFragment
   }
   search(type: ISSUE, query: "${q}", first: 100, after: ${cursor}) {
-    nodes {
-      __typename
-      ... on PullRequest {
-        ...pullRequestFragment
-      }
-      ... on Issue {
-        ...issueFragment
-      }
-    }
-    issueCount
     pageInfo {
       ...pageInfoFragment
     }
+    issueCount
+    nodes {
+      type: __typename
+      ... on PullRequest {
+          id
+          title
+          url
+          createdAt
+          updatedAt
+          resourcePath
+          state
+          isDraft
+          mergeable
+          author {
+            login
+            avatarUrl
+          }
+      }
+      ... on Issue {
+          id
+          title
+          url
+          createdAt
+          updatedAt
+          resourcePath
+          state
+          author {
+            login
+            avatarUrl
+          }
+      }
+    }
   }
 }
-${userOverviewFragment}
-${pullRequestFragment}
-${issueFragment}
 ${pageInfoFragment}
 ${rateLimitFragment}
 `;
@@ -47,7 +67,9 @@ function initData(orgs) {
     viewer {
       ...userOverviewFragment
     }
-    ${orgs.map(organization => `
+    ${orgs
+      .map(
+        (organization) => `
     ${sanitizeKey(organization)}: organization(login: "${organization}") {
       id
       name
@@ -61,13 +83,15 @@ function initData(orgs) {
         totalCount
       }
     }
-    `).join('\n')}
+    `
+      )
+      .join("\n")}
     
   }
   ${userOverviewFragment}
   ${rateLimitFragment}
-  `
-} ;
+  `;
+}
 
 function targetOrgMembers(orgs) {
   return `
@@ -75,11 +99,22 @@ function targetOrgMembers(orgs) {
     rateLimit {
       ...rateLimitFragment
     }
-    ${Object.keys(orgs).map(org => `
+    ${Object.keys(orgs)
+      .map(
+        (org) => `
     ${sanitizeKey(org)}: organization(login: "${org}" ) {
       id
       login
-      membersWithRole(first: ${orgs[org].membersWithRole.totalCount > 100 ? 100: orgs[org].membersWithRole.totalCount} ${orgs[org].membersWithRole.pageInfo && orgs[org].membersWithRole.pageInfo.hasNextPage ? `after: "${orgs[org].membersWithRole.pageInfo.endCursor}"` : ''}) {
+      membersWithRole(first: ${
+        orgs[org].membersWithRole.totalCount > 100
+          ? 100
+          : orgs[org].membersWithRole.totalCount
+      } ${
+          orgs[org].membersWithRole.pageInfo &&
+          orgs[org].membersWithRole.pageInfo.hasNextPage
+            ? `after: "${orgs[org].membersWithRole.pageInfo.endCursor}"`
+            : ""
+        }) {
         totalCount
         pageInfo {
           ...pageInfoFragment
@@ -89,14 +124,16 @@ function targetOrgMembers(orgs) {
         }
       }
     }
-    `).join('\n')}
+    `
+      )
+      .join("\n")}
     
   }
   ${pageInfoFragment}
   ${userOverviewFragment}
   ${rateLimitFragment}
-  `
-} ;
+  `;
+}
 
 function reposOverview(orgs) {
   return `
@@ -104,7 +141,9 @@ function reposOverview(orgs) {
     rateLimit {
       ...rateLimitFragment
     }
-    ${Object.keys(orgs).map(org => `
+    ${Object.keys(orgs)
+      .map(
+        (org) => `
     ${sanitizeKey(org)}: organization(login: "${org}" ) {
       id
       login
@@ -126,11 +165,110 @@ function reposOverview(orgs) {
         }
       }
     }
-    `).join('\n')}
+    `
+      )
+      .join("\n")}
     
   }
   ${pageInfoFragment}
   ${rateLimitFragment}
-  `
-} ;
-export { externalContributors, targetOrgMembers, reposOverview, initData };
+  `;
+}
+
+// function pullRequests(ids) {
+//   return `
+//   query {
+//     nodes(ids: [${ids.map(el => `"${el}"`).join(',')}]) {
+//       ... on PullRequest {
+//         ...pullRequestFragment
+//       }
+//     }
+//   }
+//   ${userOverviewFragment}
+//   ${pullRequestFragment}
+//   `
+// } ;
+
+function openPullRequests(reposWithPrs) {
+  const reposQuery = [];
+  reposWithPrs.map((repo) => {
+    const first =
+      repo.openPullRequests.totalCount > 100
+        ? 100
+        : repo.openPullRequests.totalCount;
+
+    const hasNextPage =
+      repo.openPullRequests.pageInfo &&
+      repo.openPullRequests.pageInfo.hasNextPage;
+
+    const after = hasNextPage ? `after: "${repo.openPullRequests.pageInfo.endCursor}"` : "";
+    reposQuery.push(`
+      ${sanitizeKey(repo.name)}: node(id: "${repo.id}") {
+        ... on Repository {
+            id
+            name
+            createdAt
+            openPullRequests: pullRequests(states:OPEN, first: ${first} ${after}) {
+              pullRequests: nodes {
+                ...pullRequestFragment
+              }
+            }        
+        }
+      }
+      `);
+    return reposQuery.join("\n");
+  })  
+  return `
+  query {
+    ${reposQuery}
+  }
+  ${shortUserOverviewFragment}
+  ${pullRequestFragment}
+  `;
+}
+
+function openIsues(reposWithPrs) {
+  const reposQuery = [];
+  reposWithPrs.map((repo) => {
+    const first =
+      repo.openIsues.totalCount > 100
+        ? 100
+        : repo.openIsues.totalCount;
+
+    const hasNextPage =
+      repo.openIsues.pageInfo &&
+      repo.openIsues.pageInfo.hasNextPage;
+
+    const after = hasNextPage ? `after: "${repo.openIsues.pageInfo.endCursor}"` : "";
+    reposQuery.push(`
+      ${sanitizeKey(repo.name)}: node(id: "${repo.id}") {
+        ... on Repository {
+            id
+            name
+            createdAt
+            openIsues: issues(states:OPEN, first: ${first} ${after}) {
+              issues: nodes {
+                ...issueFragment
+              }
+            }        
+        }
+      }
+      `);
+    return reposQuery.join("\n");
+  })    
+  return `
+  query {
+    ${reposQuery}
+  }
+  ${shortUserOverviewFragment}
+  ${issueFragment}
+  `;
+}
+export {
+  externalContributors,
+  targetOrgMembers,
+  reposOverview,
+  openPullRequests,
+  openIsues,
+  initData,
+};

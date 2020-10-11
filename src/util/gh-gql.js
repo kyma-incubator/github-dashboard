@@ -44,6 +44,8 @@ function gqlFetch(query, AuthorizationToken, cacheCall = true) {
 }
 
 function sanitizeKey(key) {
-  return  key.replace('-', '_');
+  return  key.replace(/-/g, '_');
 }
-export { gqlFetch, sanitizeKey };
+const arrayToObject = (arr, keyField) =>
+  Object.assign({}, ...arr.map(item => ({[item[keyField]]: item})))
+export { gqlFetch, sanitizeKey, arrayToObject };

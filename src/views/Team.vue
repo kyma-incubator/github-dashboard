@@ -1,13 +1,15 @@
 <template>
   <div class="mt-8">
     <div class="mt-6">
-      <h2 class="text-xl font-semibold text-gray-700 leading-tight">Official Kyma Team Members</h2>
+      <h2 class="text-xl font-semibold text-gray-700 leading-tight">
+        Official Kyma Team Members
+      </h2>
 
       <div class="mt-3 flex flex-col sm:flex-row">
         <div class="flex">
           <div class="relative">
             <select
-              class="appearance-none h-full rounded border-t sm:rounded-r-none sm:border-r-0 border-r border-b  border-l block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
+              class="appearance-none h-full rounded border-t sm:rounded-r-none sm:border-r-0 border-r border-b border-l block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
             >
               <option>All</option>
               <option>Active</option>
@@ -53,19 +55,29 @@
               <tr>
                 <th
                   class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                >User</th>
+                >
+                  User
+                </th>
                 <th
                   class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                >Company</th>
+                >
+                  Company
+                </th>
                 <th
                   class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                >Twitter</th>
+                >
+                  Twitter
+                </th>
                 <th
                   class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                >Total Repos</th>
+                >
+                  Total Repos
+                </th>
                 <th
                   class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                >Followers</th>
+                >
+                  Followers
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -73,23 +85,43 @@
                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                   <div class="flex items-center">
                     <div class="flex-shrink-0 w-10 h-10">
-                      <img class="w-full h-full rounded-full" :src="u.avatarUrl" alt />
+                      <img
+                        class="w-full h-full rounded-full"
+                        :src="u.avatarUrl"
+                        alt
+                      />
                     </div>
 
                     <div class="ml-3">
-                      <div class="text-sm text-gray-900 whitespace-no-wrap font-medium">{{ u.name || u.login }}</div>
-                      <div class="text-sm text-gray-500 whitespace-no-wrap">{{ u.email }}</div>
+                      <div
+                        class="text-sm text-gray-900 whitespace-no-wrap font-medium"
+                      >
+                        {{ u.name || u.login }}
+                      </div>
+                      <div class="text-sm text-gray-500 whitespace-no-wrap">
+                        {{ u.email }}
+                      </div>
                     </div>
                   </div>
                 </td>
                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <p class="text-gray-900 text-xs hitespace-no-wrap">{{ u.company }}</p>
+                  <p class="text-gray-900 text-xs hitespace-no-wrap">
+                    {{ u.company }}
+                  </p>
                 </td>
                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <p class="text-gray-900 text-sm whitespace-no-wrap"><a :href="`https://twitter.com/${u.twitterUsername}`" target="_blank">{{u.twitterUsername }}</a></p>
-                </td>                
+                  <p class="text-gray-900 text-sm whitespace-no-wrap">
+                    <a
+                      :href="`https://twitter.com/${u.twitterUsername}`"
+                      target="_blank"
+                      >{{ u.twitterUsername }}</a
+                    >
+                  </p>
+                </td>
                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <p class="text-gray-900 whitespace-no-wrap">{{ u.repositories.totalCount }}</p>
+                  <p class="text-gray-900 whitespace-no-wrap">
+                    {{ u.repositories.totalCount }}
+                  </p>
                 </td>
                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                   <span
@@ -108,7 +140,7 @@
         </div>
       </div>
     </div>
-  </div>  
+  </div>
 </template>
 
 <script>
@@ -121,13 +153,31 @@ export default {
   },
   setup() {
     const store = useStore();
-    const allMembers = computed(() => store.getters.allMembers);
-    if (!(allMembers && allMembers.value && Object.keys(allMembers.value).length > 0)) {
+    const allMembers = computed(() => {
+      const initial = store.getters.allMembers;
+      const sorted = Object.keys(initial)
+        .sort(
+          (a, b) =>
+            initial[b].followers.totalCount - initial[a].followers.totalCount
+        )
+        .reduce((sorted, key) => {
+          sorted[key] = initial[key];
+          return sorted;
+        }, {});
+      return sorted;
+    });
+    if (
+      !(
+        allMembers &&
+        allMembers.value &&
+        Object.keys(allMembers.value).length > 0
+      )
+    ) {
       console.log("getInitData", allMembers && allMembers.value);
       store.dispatch("getInitData");
     }
     return {
-      allMembers
+      allMembers,
     };
   },
 };

@@ -3,6 +3,7 @@ fragment pageInfoFragment on PageInfo {
   startCursor
   endCursor
   hasNextPage
+  hasPreviousPage
 }
 `;
 const rateLimitFragment = `
@@ -38,6 +39,13 @@ fragment userOverviewFragment on User {
   avatarUrl(size: 100)
 }
 `;
+
+const shortUserOverviewFragment = `
+fragment shortUserOverviewFragment on User {
+  id
+  login
+}
+`;
 const pullRequestFragment = `
 fragment pullRequestFragment on PullRequest {
   id
@@ -48,7 +56,7 @@ fragment pullRequestFragment on PullRequest {
   author {
     login
     ... on User {
-      ...userOverviewFragment
+      ...shortUserOverviewFragment
     }
   }
   repository {
@@ -66,7 +74,7 @@ fragment issueFragment on Issue {
   author {
     login
     ... on User {
-      ...userOverviewFragment
+      ...shortUserOverviewFragment
     }
   }
   repository {
@@ -79,6 +87,7 @@ export {
   pageInfoFragment,
   rateLimitFragment,
   userOverviewFragment,
+  shortUserOverviewFragment,
   pullRequestFragment,
   issueFragment,
 };

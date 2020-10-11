@@ -4,3 +4,5 @@ dist
 .env
 *.local
 *.error
+build/service_account.json
+public/results.json

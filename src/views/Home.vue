@@ -45,6 +45,7 @@
     </div>
   </div>
   <!-- <pre class="text-xs">{{ targetOrgs }}</pre> -->
+  
 </template>
 
 <script>
@@ -73,13 +74,13 @@ export default {
     const targetOrgs = computed(() => store.state.targetOrgs);
     const viewer = computed(() => store.state.viewer);
     function getStars(org) {
-      return org.repositories.repos && org.repositories.repos.reduce((accumulator, repo) => accumulator + repo.stargazerCount, 0)
+      return org.repositories.repos && Object.keys(org.repositories.repos).reduce((accumulator, repoId) => accumulator + org.repositories.repos[repoId].stargazerCount, 0)
     }
     function getOpenPullRequests(org) {
-      return org.repositories.repos && org.repositories.repos.reduce((accumulator, repo) => accumulator + repo.openPullRequests.totalCount, 0)
+      return org.repositories.repos && Object.keys(org.repositories.repos).reduce((accumulator, repoId) => accumulator + org.repositories.repos[repoId].openPullRequests.totalCount, 0)
     }
     function getOpenissues(org) {
-      return org.repositories.repos && org.repositories.repos.reduce((accumulator, repo) => accumulator + repo.openIsues.totalCount, 0)
+      return org.repositories.repos && Object.keys(org.repositories.repos).reduce((accumulator, repoId) => accumulator + org.repositories.repos[repoId].openIsues.totalCount, 0)
     }        
     if (!(viewer && viewer.value)) {
       console.log("getInitData", targetOrgs && targetOrgs.value);
