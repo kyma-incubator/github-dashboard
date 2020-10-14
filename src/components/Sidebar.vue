@@ -12,6 +12,7 @@
   >
     <div class="flex items-center justify-center mt-8">
       <div class="flex items-center">
+        <ChartLineArea class="mr-3" v-bind="iconConfig" :size="32"/>
         <span class="text-white text-2xl font-semibold">GH Dashboard</span>
       </div>
     </div>
@@ -22,7 +23,7 @@
         :class="[$route.name === 'Home' ? activeClass : inactiveClass]"
         :to="{ name: 'Home' }"
       >
-        <PieIcon />
+        <Home v-bind="iconConfig"/>
 
         <span class="mx-4">Overview</span>
       </router-link>
@@ -34,7 +35,7 @@
         ]"
         :to="{ name: 'ExternalContributors' }"
       >
-        <PieIcon />
+        <UserBusiness v-bind="iconConfig"/>
 
         <span class="mx-4">Externals</span>
       </router-link>
@@ -44,7 +45,7 @@
         :class="[$route.name === 'Team' ? activeClass : inactiveClass]"
         :to="{ name: 'Team' }"
       >
-        <PieIcon />
+        <Peoples v-bind="iconConfig"/>
 
         <span class="mx-4">Team</span>
       </router-link>
@@ -54,7 +55,7 @@
         :class="[$route.name === 'History' ? activeClass : inactiveClass]"
         :to="{ name: 'History' }"
       >
-        <PieIcon />
+        <History v-bind="iconConfig"/>
 
         <span class="mx-4">History</span>
       </router-link>
@@ -64,7 +65,7 @@
         :class="[$route.name === 'About' ? activeClass : inactiveClass]"
         :to="{ name: 'About' }"
       >
-        <PieIcon />
+        <Info v-bind="iconConfig"/>
 
         <span class="mx-4">About</span>
       </router-link>
@@ -103,12 +104,17 @@
 import { useStore } from "vuex";
 import { computed } from "vue";
 import { defineComponent, ref } from "vue";
-import { PieIcon } from "./Icons";
+import {Home, ChartLineArea ,UserBusiness, Peoples, History, Info} from '@icon-park/vue-next';
 
 export default defineComponent({
   name: "Sidebar",
   components: {
-    PieIcon
+    Home,
+    ChartLineArea,
+    Peoples,
+    UserBusiness,
+    History,
+    Info
   },
   setup() {
     const store = useStore();
@@ -125,7 +131,14 @@ export default defineComponent({
     const inactiveClass = ref(
       "border-gray-900 text-gray-500 hover:bg-gray-600 hover:bg-opacity-25 hover:text-gray-100"
     );
+    const iconConfig = {
+      theme:"multi-color",
+      size:"26",
+      "stroke-width": 3,
+      fill:['#fff' ,'#2F88FF' ,'#FFF' ,'#43CCF8']
+    };
     return {
+      iconConfig,
       menuOpen,
       openMenu,
       closeMenu,

@@ -11,36 +11,26 @@
     </h3>
     <div class="flex flex-wrap -mx-6" v-if="org && org.id">
       <OverviewCard title="Team Size" :count="org.membersWithRole.totalCount">
-        <div class="p-3 rounded-full bg-indigo-600 bg-opacity-75">
-          <TeamIcon />
-        </div>
+        <Peoples v-bind="iconConfig" class="p-3 rounded-full bg-yellow-700"/>
       </OverviewCard>
 
       <OverviewCard title="Total Repos" :count="org.repositories.totalCount">
-        <div class="p-3 rounded-full bg-orange-600 bg-opacity-75">
-          <ShoppingCardIcon />
-        </div>
+        <Cube v-bind="iconConfig" class="p-3 rounded-full bg-teal-700"/>
       </OverviewCard>
 
       <OverviewCard title="Total Stars" :count="getStars(org)">
-        <div class="p-3 rounded-full bg-pink-600 bg-opacity-75">
-          <ShoppingBagIcon />
-        </div>
+        <Star v-bind="iconConfig" class="p-3 rounded-full bg-orange-600"/>
       </OverviewCard>
 
       <OverviewCard
         title="Total open Pull Requests"
         :count="getOpenPullRequests(org)"
       >
-        <div class="p-3 rounded-full bg-pink-600 bg-opacity-75">
-          <ShoppingBagIcon />
-        </div>
+        <RecyclingPool v-bind="iconConfig" class="p-3 rounded-full bg-purple-600"/>
       </OverviewCard>
 
       <OverviewCard title="Totalopen Issues" :count="getOpenissues(org)">
-        <div class="p-3 rounded-full bg-pink-600 bg-opacity-75">
-          <ShoppingBagIcon />
-        </div>
+        <DeadlineSort v-bind="iconConfig" class="p-3 rounded-full bg-pink-600"/>
       </OverviewCard>
     </div>
   </div>
@@ -55,19 +45,17 @@ import { computed, onMounted, ref } from "vue";
 
 // import crossfilter from 'crossfilter2';
 import OverviewCard from "../components/OverviewCard.vue";
-import {
-  ShoppingCardIcon,
-  ShoppingBagIcon,
-  TeamIcon
-} from "../components/Icons";
+import {Peoples,Star,RecyclingPool,DeadlineSort, Cube} from '@icon-park/vue-next';
 
 export default {
   name: "Home",
   components: {
     OverviewCard,
-    ShoppingCardIcon,
-    ShoppingBagIcon,
-    TeamIcon
+    Peoples,
+    Cube,
+    RecyclingPool,
+    DeadlineSort,
+    Star
   },
   setup() {
     const container = ref(null);
@@ -75,6 +63,12 @@ export default {
     const targetOrgs = computed(() => store.state.targetOrgs);
     const history = computed(() => store.state.history);
     const viewer = computed(() => store.state.viewer);
+    const iconConfig = {
+      theme:"filled",
+      size:"32",
+      "stroke-width": 4,
+      fill:['#fff' ,'#2F88FF' ,'#FFF' ,'#43CCF8']
+    };    
     function getStars(org) {
       return (
         org.repositories.repos &&
@@ -151,7 +145,8 @@ export default {
       getOpenPullRequests,
       getOpenissues,
       history,
-      container
+      container,
+      iconConfig
     };
   }
 };
