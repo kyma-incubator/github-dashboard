@@ -29,7 +29,12 @@ const router = createRouter({
       component: defineAsyncComponent(() =>
         import("./views/ExternalContributors.vue")
       ),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
+      async beforeEnter(to, from, next) {
+        await store.dispatch("getInitData");
+        await store.dispatch("getExternalContributors");
+        next()
+      }      
     },
     {
       path: "/about",
