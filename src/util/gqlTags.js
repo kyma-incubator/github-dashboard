@@ -4,7 +4,7 @@ import {
   userOverviewFragment,
   shortUserOverviewFragment,
   pullRequestFragment,
-  issueFragment,
+  issueFragment
 } from "./gqlFragments.js";
 
 import { sanitizeKey } from "./gh-gql";
@@ -69,7 +69,7 @@ function initData(orgs) {
     }
     ${orgs
       .map(
-        (organization) => `
+        organization => `
     ${sanitizeKey(organization)}: organization(login: "${organization}") {
       id
       name
@@ -101,7 +101,7 @@ function targetOrgMembers(orgs) {
     }
     ${Object.keys(orgs)
       .map(
-        (org) => `
+        org => `
     ${sanitizeKey(org)}: organization(login: "${org}" ) {
       id
       login
@@ -143,7 +143,7 @@ function reposOverview(orgs) {
     }
     ${Object.keys(orgs)
       .map(
-        (org) => `
+        org => `
     ${sanitizeKey(org)}: organization(login: "${org}" ) {
       id
       login
@@ -191,7 +191,7 @@ function reposOverview(orgs) {
 
 function openPullRequests(reposWithPrs) {
   const reposQuery = [];
-  reposWithPrs.map((repo) => {
+  reposWithPrs.map(repo => {
     const first =
       repo.openPullRequests.totalCount > 100
         ? 100
@@ -201,7 +201,9 @@ function openPullRequests(reposWithPrs) {
       repo.openPullRequests.pageInfo &&
       repo.openPullRequests.pageInfo.hasNextPage;
 
-    const after = hasNextPage ? `after: "${repo.openPullRequests.pageInfo.endCursor}"` : "";
+    const after = hasNextPage
+      ? `after: "${repo.openPullRequests.pageInfo.endCursor}"`
+      : "";
     reposQuery.push(`
       ${sanitizeKey(repo.name)}: node(id: "${repo.id}") {
         ... on Repository {
@@ -217,7 +219,7 @@ function openPullRequests(reposWithPrs) {
       }
       `);
     return reposQuery.join("\n");
-  })  
+  });
   return `
   query {
     ${reposQuery}
@@ -229,17 +231,16 @@ function openPullRequests(reposWithPrs) {
 
 function openIsues(reposWithPrs) {
   const reposQuery = [];
-  reposWithPrs.map((repo) => {
+  reposWithPrs.map(repo => {
     const first =
-      repo.openIsues.totalCount > 100
-        ? 100
-        : repo.openIsues.totalCount;
+      repo.openIsues.totalCount > 100 ? 100 : repo.openIsues.totalCount;
 
     const hasNextPage =
-      repo.openIsues.pageInfo &&
-      repo.openIsues.pageInfo.hasNextPage;
+      repo.openIsues.pageInfo && repo.openIsues.pageInfo.hasNextPage;
 
-    const after = hasNextPage ? `after: "${repo.openIsues.pageInfo.endCursor}"` : "";
+    const after = hasNextPage
+      ? `after: "${repo.openIsues.pageInfo.endCursor}"`
+      : "";
     reposQuery.push(`
       ${sanitizeKey(repo.name)}: node(id: "${repo.id}") {
         ... on Repository {
@@ -255,7 +256,7 @@ function openIsues(reposWithPrs) {
       }
       `);
     return reposQuery.join("\n");
-  })    
+  });
   return `
   query {
     ${reposQuery}
@@ -270,5 +271,5 @@ export {
   reposOverview,
   openPullRequests,
   openIsues,
-  initData,
+  initData
 };

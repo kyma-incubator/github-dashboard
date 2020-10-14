@@ -1,4 +1,4 @@
-const defaultTheme = require('tailwindcss/defaultTheme');
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
   future: {
@@ -6,15 +6,15 @@ module.exports = {
     purgeLayersByDefault: true
   },
   purge: {
-    enabled: process.env.NODE_ENV === 'production',
-    content: ['./index.html', './src/**/*.vue', './src/**/*.js'],
+    enabled: process.env.NODE_ENV === "production",
+    content: ["./index.html", "./src/**/*.vue", "./src/**/*.js"]
   },
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
-      },
-    },
+        sans: ["Inter var", ...defaultTheme.fontFamily.sans]
+      }
+    }
   },
-  plugins: [require('@tailwindcss/custom-forms')],
+  plugins: [require("@tailwindcss/custom-forms")]
 };

@@ -7,9 +7,7 @@
   ></div>
   <!-- End Backdrop -->
   <div
-    :class="
-      menuOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'
-    "
+    :class="menuOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'"
     class="fixed z-30 inset-y-0 left-0 w-64 transition duration-300 transform bg-gray-900 overflow-y-auto lg:translate-x-0 lg:static lg:inset-0"
   >
     <div class="flex items-center justify-center mt-8">
@@ -31,7 +29,9 @@
 
       <router-link
         class="flex items-center mt-4 py-2 px-6 border-l-4"
-        :class="[$route.name === 'ExternalContributors' ? activeClass : inactiveClass]"
+        :class="[
+          $route.name === 'ExternalContributors' ? activeClass : inactiveClass
+        ]"
         :to="{ name: 'ExternalContributors' }"
       >
         <PieIcon />
@@ -51,6 +51,16 @@
 
       <router-link
         class="flex items-center mt-4 py-2 px-6 border-l-4"
+        :class="[$route.name === 'History' ? activeClass : inactiveClass]"
+        :to="{ name: 'History' }"
+      >
+        <PieIcon />
+
+        <span class="mx-4">History</span>
+      </router-link>
+
+      <router-link
+        class="flex items-center mt-4 py-2 px-6 border-l-4"
         :class="[$route.name === 'About' ? activeClass : inactiveClass]"
         :to="{ name: 'About' }"
       >
@@ -58,7 +68,6 @@
 
         <span class="mx-4">About</span>
       </router-link>
-
     </nav>
   </div>
   <!-- <div class="-mb-px flex justify-center">
@@ -94,23 +103,22 @@
 import { useStore } from "vuex";
 import { computed } from "vue";
 import { defineComponent, ref } from "vue";
-import { LogoIcon, PieIcon } from "./Icons";
+import { PieIcon } from "./Icons";
 
 export default defineComponent({
   name: "Sidebar",
   components: {
-    LogoIcon,
-    PieIcon,
+    PieIcon
   },
   setup() {
     const store = useStore();
     const menuOpen = computed(() => store.state.menuOpen);
     function openMenu() {
-      store.commit('setMenu', true)
+      store.commit("setMenu", true);
     }
     function closeMenu() {
-      store.commit('setMenu', false)
-    }    
+      store.commit("setMenu", false);
+    }
     const activeClass = ref(
       "bg-gray-600 bg-opacity-25 text-gray-100 border-gray-100"
     );
@@ -122,11 +130,10 @@ export default defineComponent({
       openMenu,
       closeMenu,
       activeClass,
-      inactiveClass,
+      inactiveClass
     };
-  },
+  }
 });
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

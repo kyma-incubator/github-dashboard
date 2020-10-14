@@ -22,7 +22,7 @@
           />
         </div>
       </div>
-            {{selectedItem}} - {{searchTerm}}
+      {{ selectedItem }} - {{ searchTerm }}
       <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
         <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
           <table class="min-w-full leading-normal">
@@ -100,11 +100,15 @@
                 </td>
                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                   <span
-                    :class="`relative inline-block px-3 py-1 font-semibold text-${u.statusColor}-900 leading-tight`"
+                    :class="
+                      `relative inline-block px-3 py-1 font-semibold text-${u.statusColor}-900 leading-tight`
+                    "
                   >
                     <span
                       aria-hidden
-                      :class="`absolute inset-0 bg-${u.statusColor}-200 opacity-50 rounded-full`"
+                      :class="
+                        `absolute inset-0 bg-${u.statusColor}-200 opacity-50 rounded-full`
+                      "
                     ></span>
                     <span class="relative">{{ u.followers.totalCount }}</span>
                   </span>
@@ -120,16 +124,16 @@
 
 <script>
 import { useStore } from "vuex";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 export default {
   name: "Home",
   props: {
-    msg: String,
+    msg: String
   },
   setup() {
     const store = useStore();
-    let selectedItem = ref('All');
-    let searchTerm = ref('');
+    let selectedItem = ref("All");
+    let searchTerm = ref("");
     const allMembers = computed(() => {
       const initial = store.getters.allMembers;
       const sorted = Object.keys(initial)
@@ -144,29 +148,29 @@ export default {
       return sorted;
     });
     let hasMembers = computed(() => {
-      if (allMembers &&
-        allMembers.value &&
-        Object.keys(allMembers.value).length > 0) {
+      if (allMembers.value && Object.keys(allMembers.value).length > 0) {
         return true;
       } else {
-        return false
+        return false;
       }
-    })
-    let filteredMembers = computed(()=>{
+    });
+    let filteredMembers = computed(() => {
       let filteredResult = {};
       if (hasMembers.value) {
-        Object.keys(allMembers.value).map( userLogin => {
-          const textVersion = JSON.stringify(allMembers.value[userLogin]).toLowerCase()
+        Object.keys(allMembers.value).map(userLogin => {
+          const textVersion = JSON.stringify(
+            allMembers.value[userLogin]
+          ).toLowerCase();
           if (textVersion.includes(searchTerm.value.toLowerCase().trim())) {
             filteredResult[userLogin] = allMembers.value[userLogin];
           }
-        })        
-      } 
-      console.log(filteredResult)
+        });
+      }
+      console.log(filteredResult);
       return filteredResult;
     });
     if (!hasMembers.value) {
-      console.log("getInitData", allMembers && allMembers.value);
+      console.log("getInitData", allMembers.value);
       store.dispatch("getInitData");
     }
     return {
@@ -175,6 +179,6 @@ export default {
       selectedItem,
       searchTerm
     };
-  },
+  }
 };
 </script>

@@ -89,5 +89,5 @@ export {
   userOverviewFragment,
   shortUserOverviewFragment,
   pullRequestFragment,
-  issueFragment,
+  issueFragment
 };

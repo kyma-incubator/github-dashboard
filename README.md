@@ -99,33 +99,3 @@ FROM
 WHERE
   _TABLE_SUFFIX BETWEEN '180704'AND '180705'
 ```
-
-
-
-SELECT
-  FORMAT_TIMESTAMP('%F', created_at) AS date,
-  org.login AS organization,
-  repo.name AS repository,
-  actor.login AS actor,
-  type,
-  JSON_EXTRACT_SCALAR(payload,
-    '$.action') AS action,
-  COUNT(*) AS count
-FROM
-  `githubarchive.day.20*`
-WHERE
-  _TABLE_SUFFIX BETWEEN '180704'AND '180705'
-  AND type IN ('IssuesEvent',
-    'WatchEvent',
-    'PullRequestEvent')
-  AND org.login IN ('kyma-project',
-    'kyma-incubator')
-GROUP BY
-  1,
-  2,
-  3,
-  4,
-  5,
-  6
-ORDER BY
-  1 ASC

@@ -34,6 +34,6 @@
 
 <script>
 export default {
-  name: "TeamIcon",
+  name: "TeamIcon"
 };
 </script>
