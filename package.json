@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@antv/g2plot": "^2.0.2",
+    "@icon-park/vue-next": "^1.0.11",
     "@opd/g2plot-vue": "^1.0.1",
     "core-js": "^3.6.5",
     "crossfilter2": "^1.5.4",

@@ -27,7 +27,7 @@
 
     <div class="flex items-center">
       <button class="flex mx-4 text-gray-600 focus:outline-none">
-        <NotificationIcon />
+        <Refresh />
       </button>
 
       <div class="relative" v-if="isAuthenticated && viewer">
@@ -72,12 +72,12 @@
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { computed } from "vue";
+import {Refresh} from '@icon-park/vue-next';
 
-import { NotificationIcon } from "./Icons";
 
 export default defineComponent({
   components: {
-    NotificationIcon
+    Refresh
   },
   setup() {
     const store = useStore();
