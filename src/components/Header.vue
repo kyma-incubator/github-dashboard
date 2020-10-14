@@ -1,32 +1,20 @@
 <template>
   <header
-    class="flex justify-between items-center py-4 px-6 bg-white border-b-4 border-indigo-600"
+    class="flex justify-between items-center py-4 px-6 bg-white border-b-4 border-blue-600"
   >
     <div class="flex items-center">
       <button
         @click="openMenu"
         class="text-gray-500 focus:outline-none lg:hidden"
       >
-        <svg
-          class="h-6 w-6"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M4 6H20M4 12H20M4 18H11"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+        <MenuFoldOne :size="24"/>
+
       </button>
 
     </div>
 
     <div class="flex items-center">
-      <button class="flex mx-4 text-gray-600 focus:outline-none">
+      <button class="flex mx-4 text-gray-600 focus:outline-none" @click="clearCache">
         <Refresh />
       </button>
 
@@ -72,12 +60,13 @@
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { computed } from "vue";
-import {Refresh} from '@icon-park/vue-next';
+import {Refresh, MenuFoldOne} from '@icon-park/vue-next';
 
 
 export default defineComponent({
   components: {
-    Refresh
+    Refresh,
+    MenuFoldOne
   },
   setup() {
     const store = useStore();
@@ -89,10 +78,14 @@ export default defineComponent({
     function openMenu() {
       store.commit("setMenu", true);
     }
+    function clearCache() {
+      store.dispatch("clearCache");
+    }    
 
     return {
       menuOpen,
       openMenu,
+      clearCache,
       viewer,
       dropdownOpen,
       isAuthenticated

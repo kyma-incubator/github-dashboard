@@ -45,7 +45,7 @@
         :class="[$route.name === 'Team' ? activeClass : inactiveClass]"
         :to="{ name: 'Team' }"
       >
-        <Peoples v-bind="iconConfig"/>
+        <PeoplesTwo v-bind="iconConfig"/>
 
         <span class="mx-4">Team</span>
       </router-link>
@@ -104,14 +104,14 @@
 import { useStore } from "vuex";
 import { computed } from "vue";
 import { defineComponent, ref } from "vue";
-import {Home, ChartLineArea ,UserBusiness, Peoples, History, Info} from '@icon-park/vue-next';
+import {Home, ChartLineArea ,UserBusiness, PeoplesTwo, History, Info} from '@icon-park/vue-next';
 
 export default defineComponent({
   name: "Sidebar",
   components: {
     Home,
     ChartLineArea,
-    Peoples,
+    PeoplesTwo,
     UserBusiness,
     History,
     Info
