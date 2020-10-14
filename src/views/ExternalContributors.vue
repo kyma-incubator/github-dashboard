@@ -9,6 +9,7 @@
         <div class="flex">
           <div class="relative">
             <select
+              v-model="selectedType"
               class="appearance-none h-full rounded border-t sm:rounded-r-none sm:border-r-0 border-r border-b border-l block w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
             >
               <option>All</option>
@@ -43,6 +44,7 @@
 
           <input
             placeholder="Search"
+            v-model="searchInput"
             class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
           />
         </div>
@@ -81,7 +83,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="node in externalContributors" :key="node.id">
+              <tr v-for="node in filteredExternalContributors" :key="node.id">
                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                   <div class="flex items-center">
                     <div class="flex-shrink-0 w-10 h-10">
@@ -148,12 +150,12 @@
       </div>
     </div>
   </div>
-  <!-- <pre>{{ externalContributors }}</pre> -->
+  <!-- <pre>{{ filteredExternalContributors }}</pre> -->
 </template>
 
 <script>
 import { useStore } from "vuex";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 export default {
   name: "ExternalContributors",
   props: {
@@ -161,19 +163,12 @@ export default {
   },
   setup() {
     const store = useStore();
+    const selectedType = ref("All");
+    const searchInput = ref(null);
     const externalContributors = computed(
       () => store.state.externalContributors
     );
-    // const externalOpenIsuessContributors = computed(() =>
-    //   store.state.externalContributors.filter(el => el.type === "Issue")
-    // );
-    // const externalPullRequestsContributors = computed(() =>
-    //   store.state.externalContributors.filter(el => el.type === "PullRequest")
-    // );
-    if (!externalContributors.value) {
-      console.log("getExternalContributors", externalContributors.value);
-      store.dispatch("getExternalContributors");
-    }
+
     function extractOrganizationFromUrl(url) {
       const splitted = url.split("/");
       const organization = splitted[1];
@@ -183,9 +178,25 @@ export default {
         project
       };
     }
+    let filteredExternalContributors = computed(() => {
+      return externalContributors.value.filter(el => {
+        const filterOk =
+          selectedType.value === "All" ? true : selectedType.value === el.type;
+        const textVersion = JSON.stringify(el).toLowerCase();
+        const fsearchOk = searchInput.value
+          ? textVersion.includes(searchInput.value)
+          : true;
+        if (filterOk && fsearchOk) {
+          return el;
+        }
+      });
+    });
     return {
       extractOrganizationFromUrl,
-      externalContributors
+      externalContributors,
+      searchInput,
+      selectedType,
+      filteredExternalContributors
     };
   }
 };
