@@ -29,7 +29,9 @@
           <button
             type="submit"
             class="py-2 px-4 text-center bg-indigo-600 rounded-md w-full text-white text-sm hover:bg-indigo-500"
-          >Login in</button>
+          >
+            Login in
+          </button>
         </div>
       </form>
     </div>
@@ -40,17 +42,14 @@
 import { useStore } from "vuex";
 export default {
   name: "Login",
-  props: {
-    msg: String,
-  },
-  setup(props, context) {
+  setup() {
     const store = useStore();
     function login() {
       store.dispatch("login");
     }
     return {
-      login,
+      login
     };
-  },
+  }
 };
 </script>

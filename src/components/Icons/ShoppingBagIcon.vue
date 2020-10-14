@@ -22,6 +22,6 @@
 
 <script>
 export default {
-  name: "ShoppingBagIcon",
+  name: "ShoppingBagIcon"
 };
 </script>

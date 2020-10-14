@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full mt-6 px-6 sm:w-1/2 xl:w-1/3 xl:mt-0">
+  <div class="w-full mt-6 mb-6 px-3 sm:w-1/2 xl:w-1/3 xl:mt-0">
     <div class="flex items-center px-5 py-6 shadow-sm rounded-md bg-white">
       <slot />
 
@@ -19,12 +19,12 @@ export default {
   props: {
     title: {
       type: String,
-      required: true,
+      required: true
     },
     count: {
       type: Number,
-      required: true,
-    },
+      required: true
+    }
   }
-}
+};
 </script>

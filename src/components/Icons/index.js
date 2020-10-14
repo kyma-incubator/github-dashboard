@@ -11,5 +11,5 @@ export {
   PieIcon,
   TeamIcon,
   ShoppingCardIcon,
-  ShoppingBagIcon,
+  ShoppingBagIcon
 };

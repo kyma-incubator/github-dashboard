@@ -1,4 +1,4 @@
-let cache = JSON.parse(window.sessionStorage.getItem('graphqlCache')) || {};
+let cache = JSON.parse(window.sessionStorage.getItem("graphqlCache")) || {};
 function hash(str) {
   // https://logaretm.com/blog/2020-02-24-caching-graphql-requests/
   // http://www.cse.yorku.ca/~oz/hash.html
@@ -11,7 +11,7 @@ function hash(str) {
 }
 function setCache(queryHash, payload) {
   cache[queryHash] = payload;
-  window.sessionStorage.setItem('graphqlCache', JSON.stringify(cache));
+  window.sessionStorage.setItem("graphqlCache", JSON.stringify(cache));
 }
 function gqlFetch(query, AuthorizationToken, cacheCall = true) {
   const body = JSON.stringify({ query });
@@ -20,15 +20,15 @@ function gqlFetch(query, AuthorizationToken, cacheCall = true) {
     return Promise.resolve(cache[queryHash]);
   } else {
     return new Promise((resolve, reject) => {
-      fetch('https://api.github.com/graphql', {
-        method: 'POST',
+      fetch("https://api.github.com/graphql", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${AuthorizationToken}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthorizationToken}`
         },
-        body,
+        body
       })
-        .then((res) => res.json())
+        .then(res => res.json())
         .then(({ data, errors }) => {
           if (errors) {
             reject(errors);
@@ -38,14 +38,14 @@ function gqlFetch(query, AuthorizationToken, cacheCall = true) {
             resolve(data);
           }
         })
-        .catch((error) => reject(error));
+        .catch(error => reject(error));
     });
   }
 }
 
 function sanitizeKey(key) {
-  return  key.replace(/-/g, '_');
+  return key.replace(/-/g, "_");
 }
 const arrayToObject = (arr, keyField) =>
-  Object.assign({}, ...arr.map(item => ({[item[keyField]]: item})))
+  Object.assign({}, ...arr.map(item => ({ [item[keyField]]: item })));
 export { gqlFetch, sanitizeKey, arrayToObject };

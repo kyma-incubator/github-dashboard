@@ -5,10 +5,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { defineComponent, computed } from "vue";
+import { useRouter } from "vue-router";
 
-const defaultLayout = 'default';
+const defaultLayout = "default";
 
 export default defineComponent({
   setup() {
@@ -18,8 +18,8 @@ export default defineComponent({
       () => `${currentRoute.value.meta.layout || defaultLayout}-layout`
     );
     return {
-      layout,
+      layout
     };
-  },
+  }
 });
 </script>

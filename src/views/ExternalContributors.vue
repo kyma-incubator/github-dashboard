@@ -98,38 +98,41 @@
                       >
                         {{ node.author.login }}
                       </div>
-                      <div class="text-sm text-gray-500 whitespace-no-wrap">
-                        
-                      </div>
+                      <div
+                        class="text-sm text-gray-500 whitespace-no-wrap"
+                      ></div>
                     </div>
                   </div>
                 </td>
                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                   <p class="text-gray-900 text-xs hitespace-no-wrap">
-                    <a
-                      :href="`${node.url}`"
-                      target="_blank"
-                      >{{ node.title }}</a
-                    > 
+                    <a :href="`${node.url}`" target="_blank">{{
+                      node.title
+                    }}</a>
                   </p>
                 </td>
                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                   <p class="text-gray-900 text-sm whitespace-no-wrap">
-                    <a
-                      :href="`${node.url}`"
-                      target="_blank"
-                      >{{ extractOrganizationFromUrl(node.resourcePath).organization }}/{{ extractOrganizationFromUrl(node.resourcePath).project }}</a
+                    <a :href="`${node.url}`" target="_blank"
+                      >{{
+                        extractOrganizationFromUrl(node.resourcePath)
+                          .organization
+                      }}/{{
+                        extractOrganizationFromUrl(node.resourcePath).project
+                      }}</a
                     >
                   </p>
                 </td>
                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                   <p class="text-gray-900 whitespace-no-wrap">
-                    {{ new Date(node.createdAt).toLocaleDateString('de') }}
+                    {{ new Date(node.createdAt).toLocaleDateString("de") }}
                   </p>
                 </td>
                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                   <span
-                    :class="`relative inline-block px-3 py-1 font-semibold leading-tight`"
+                    :class="
+                      `relative inline-block px-3 py-1 font-semibold leading-tight`
+                    "
                   >
                     <span
                       aria-hidden
@@ -144,7 +147,7 @@
         </div>
       </div>
     </div>
-  </div>  
+  </div>
   <!-- <pre>{{ externalContributors }}</pre> -->
 </template>
 
@@ -154,30 +157,36 @@ import { computed } from "vue";
 export default {
   name: "ExternalContributors",
   props: {
-    msg: String,
+    msg: String
   },
   setup() {
     const store = useStore();
-    const externalContributors = computed(() => store.state.externalContributors);
-    const externalOpenIsuessContributors = computed(() => store.state.externalContributors.filter(el => el.type === 'Issue'));
-    const externalPullRequestsContributors = computed(() => store.state.externalContributors.filter(el => el.type === 'PullRequest'));
-    if (!(externalContributors && externalContributors.value)) {
-      console.log("getExternalContributors", externalContributors && externalContributors.value);
+    const externalContributors = computed(
+      () => store.state.externalContributors
+    );
+    // const externalOpenIsuessContributors = computed(() =>
+    //   store.state.externalContributors.filter(el => el.type === "Issue")
+    // );
+    // const externalPullRequestsContributors = computed(() =>
+    //   store.state.externalContributors.filter(el => el.type === "PullRequest")
+    // );
+    if (!externalContributors.value) {
+      console.log("getExternalContributors", externalContributors.value);
       store.dispatch("getExternalContributors");
     }
     function extractOrganizationFromUrl(url) {
-      const splitted = url.split('/');
+      const splitted = url.split("/");
       const organization = splitted[1];
       const project = splitted[2];
       return {
         organization,
         project
-      }
+      };
     }
     return {
       extractOrganizationFromUrl,
       externalContributors
     };
-  },
+  }
 };
 </script>
