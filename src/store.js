@@ -277,6 +277,9 @@ const store = createStore({
       commit("setExternalContributors", null);
       window.localStorage.removeItem("token");
       window.sessionStorage.removeItem("graphqlCache");
+    },
+    clearCache: () => {
+      window.sessionStorage.removeItem("graphqlCache");
     }
   },
   getters: {

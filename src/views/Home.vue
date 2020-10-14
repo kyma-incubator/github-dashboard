@@ -11,7 +11,7 @@
     </h3>
     <div class="flex flex-wrap -mx-6" v-if="org && org.id">
       <OverviewCard title="Team Size" :count="org.membersWithRole.totalCount">
-        <Peoples v-bind="iconConfig" class="p-3 rounded-full bg-yellow-700"/>
+        <PeoplesTwo v-bind="iconConfig" class="p-3 rounded-full bg-yellow-700"/>
       </OverviewCard>
 
       <OverviewCard title="Total Repos" :count="org.repositories.totalCount">
@@ -26,11 +26,11 @@
         title="Total open Pull Requests"
         :count="getOpenPullRequests(org)"
       >
-        <RecyclingPool v-bind="iconConfig" class="p-3 rounded-full bg-purple-600"/>
+        <BranchTwo v-bind="iconConfig" class="p-3 rounded-full bg-purple-600"/>
       </OverviewCard>
 
       <OverviewCard title="Totalopen Issues" :count="getOpenissues(org)">
-        <DeadlineSort v-bind="iconConfig" class="p-3 rounded-full bg-pink-600"/>
+        <Flag v-bind="iconConfig" class="p-3 rounded-full bg-pink-600"/>
       </OverviewCard>
     </div>
   </div>
@@ -45,16 +45,16 @@ import { computed, onMounted, ref } from "vue";
 
 // import crossfilter from 'crossfilter2';
 import OverviewCard from "../components/OverviewCard.vue";
-import {Peoples,Star,RecyclingPool,DeadlineSort, Cube} from '@icon-park/vue-next';
+import {PeoplesTwo, Star,BranchTwo,Flag, Cube} from '@icon-park/vue-next';
 
 export default {
   name: "Home",
   components: {
     OverviewCard,
-    Peoples,
+    PeoplesTwo,
     Cube,
-    RecyclingPool,
-    DeadlineSort,
+    BranchTwo,
+    Flag,
     Star
   },
   setup() {

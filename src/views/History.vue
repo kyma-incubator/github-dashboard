@@ -9,8 +9,8 @@
             class="flex flex-wrap w-full sm:py-24 py-16 sm:px-10 px-6 relative"
           >
             <div class="text-center relative z-10 w-full">
-              <h2 class="text-xl text-gray-900 font-medium title-font mb-2">
-                Shooting Stars
+              <h2 class="text-m text-gray-900 font-medium title-font mb-2">
+                Filter by year
               </h2>
               <div
                 class="w-full h-full object-center block "
@@ -24,8 +24,8 @@
             class="flex flex-wrap w-full sm:py-24 py-16 sm:px-10 px-6 relative"
           >
             <div class="text-center relative z-10 w-full">
-              <h2 class="text-xl text-gray-900 font-medium title-font mb-2">
-                Shooting Stars
+              <h2 class="text-m text-gray-900 font-medium title-font mb-2">
+                Filter by day of week
               </h2>
               <div
                 class="w-full h-full object-center block "
@@ -39,8 +39,8 @@
             class="flex flex-wrap w-full sm:py-24 py-16 sm:px-10 px-6 relative"
           >
             <div class="text-center relative z-10 w-full">
-              <h2 class="text-xl text-gray-900 font-medium title-font mb-2">
-                Shooting Stars
+              <h2 class="text-m text-gray-900 font-medium title-font mb-2">
+                Filter by issue type
               </h2>
               <div
                 class="w-full h-full object-center block "
@@ -52,7 +52,7 @@
         <div class="flex flex-wrap w-full py-2 px-10 relative mb-4">
           <div class="text-center relative z-10 w-full">
             <h2 class="text-2xl text-gray-900 font-medium title-font mb-2">
-              Shooting Stars
+              All Interactions
             </h2>
             <div>
               <div
@@ -77,7 +77,7 @@
 import { useStore } from "vuex";
 import { computed, onMounted, ref } from "vue";
 import crossfilter from "crossfilter2";
-import { barChart, pieChart, rowChart, Legend, filterAll, renderAll } from "dc";
+import { barChart, pieChart, rowChart, filterAll, renderAll } from "dc";
 import { scaleTime, timeWeek, timeWeeks, timeDay, timeDays } from "d3";
 export default {
   name: "History",
@@ -155,13 +155,6 @@ export default {
         .rangeChart(rangeChart)
         .brushOn(false)
         .mouseZoomable(true)
-        .legend(
-          new Legend()
-            .x(allInteractions.value.containerWidth - 200)
-            .y(10)
-            .itemHeight(13)
-            .gap(5)
-        )
         .title(
           d =>
             `${new Date(d.key).toLocaleDateString("de")}\n Total Interactions:${
