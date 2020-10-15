@@ -39,7 +39,7 @@ yarn dev
 This website is using the Netlify Oauth2 integration. You can adapt this project to fit your needs, by creating your own Netlify Website and provide this via a `.env` variable to your app.
 
 ```
-VITE_NETLIFY_APP_ID=xxxx-your-netlify-site-id
+VUE_APP_NETLIFY_APP_ID=xxxx-your-netlify-site-id
 ```
 
 You will need to modify the inital organizations that are checked, by modifying the `store.js` targetOrgs to fit your organization structure `targetOrgs: { 'kyma-project': null, 'kyma-incubator': null }`
