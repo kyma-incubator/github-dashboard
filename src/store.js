@@ -110,7 +110,7 @@ const store = createStore({
   actions: {
     login(context) {
       const authenticator = new Authenticator({
-        site_id: `${process.env.VUE_NETLIFY_APP_ID || null}`,
+        site_id: `${process.env.VUE_APP_NETLIFY_APP_ID || null}`,
       });
       authenticator.authenticate(
         { provider: "github", scope: "read:user, read:org" },
