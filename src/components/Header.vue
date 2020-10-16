@@ -7,14 +7,15 @@
         @click="openMenu"
         class="text-gray-500 focus:outline-none lg:hidden"
       >
-        <MenuFoldOne :size="24"/>
-
+        <MenuFoldOne :size="24" />
       </button>
-
     </div>
 
     <div class="flex items-center">
-      <button class="flex mx-4 text-gray-600 focus:outline-none" @click="clearCache">
+      <button
+        class="flex mx-4 text-gray-600 focus:outline-none"
+        @click="clearCache"
+      >
         <Refresh />
       </button>
 
@@ -60,8 +61,7 @@
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { computed } from "vue";
-import {Refresh, MenuFoldOne} from '@icon-park/vue-next';
-
+import { Refresh, MenuFoldOne } from "@icon-park/vue-next";
 
 export default defineComponent({
   components: {
@@ -80,7 +80,7 @@ export default defineComponent({
     }
     function clearCache() {
       store.dispatch("clearCache");
-    }    
+    }
 
     return {
       menuOpen,

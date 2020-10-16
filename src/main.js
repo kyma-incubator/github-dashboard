@@ -3,8 +3,8 @@ import router from "./router";
 import store from "./store";
 import App from "./App.vue";
 import "./main.css";
-import '@icon-park/vue-next/styles/index.css';
-import "dc/dist/style/dc.css"
+import "@icon-park/vue-next/styles/index.css";
+import "dc/dist/style/dc.css";
 
 import DashboardLayout from "./components/DashboardLayout.vue";
 import EmptyLayout from "./components/EmptyLayout.vue";
