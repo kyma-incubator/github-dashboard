@@ -25,9 +25,20 @@ const store = createStore({
         "aszecowka",
         "pkosiec",
         "tomekpapiernik",
-        "mszostok"
+        "mszostok",
+        "lszymik",
+        "sjanota",
+        "SeriousSem",
+        "lauraanddola",
+        "muralov"
       ],
-      botsContributors: ["dependabot"],
+      botsContributors: [
+        "[bot]",
+        "dependabot",
+        "stale[bot]",
+        "pull[bot]",
+        "kyma-bot"
+      ],
       history: null
     };
   },
