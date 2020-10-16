@@ -12,7 +12,7 @@
   >
     <div class="flex items-center justify-center mt-8">
       <div class="flex items-center">
-        <ChartLineArea class="mr-3" v-bind="iconConfig" :size="32"/>
+        <ChartLineArea class="mr-3" v-bind="iconConfig" :size="32" />
         <span class="text-white text-2xl font-semibold">GH Dashboard</span>
       </div>
     </div>
@@ -23,7 +23,7 @@
         :class="[$route.name === 'Home' ? activeClass : inactiveClass]"
         :to="{ name: 'Home' }"
       >
-        <Home v-bind="iconConfig"/>
+        <Home v-bind="iconConfig" />
 
         <span class="mx-4">Overview</span>
       </router-link>
@@ -35,7 +35,7 @@
         ]"
         :to="{ name: 'ExternalContributors' }"
       >
-        <UserBusiness v-bind="iconConfig"/>
+        <UserBusiness v-bind="iconConfig" />
 
         <span class="mx-4">Externals</span>
       </router-link>
@@ -45,7 +45,7 @@
         :class="[$route.name === 'Team' ? activeClass : inactiveClass]"
         :to="{ name: 'Team' }"
       >
-        <PeoplesTwo v-bind="iconConfig"/>
+        <PeoplesTwo v-bind="iconConfig" />
 
         <span class="mx-4">Team</span>
       </router-link>
@@ -55,7 +55,7 @@
         :class="[$route.name === 'History' ? activeClass : inactiveClass]"
         :to="{ name: 'History' }"
       >
-        <History v-bind="iconConfig"/>
+        <History v-bind="iconConfig" />
 
         <span class="mx-4">History</span>
       </router-link>
@@ -65,7 +65,7 @@
         :class="[$route.name === 'About' ? activeClass : inactiveClass]"
         :to="{ name: 'About' }"
       >
-        <Info v-bind="iconConfig"/>
+        <Info v-bind="iconConfig" />
 
         <span class="mx-4">About</span>
       </router-link>
@@ -104,7 +104,14 @@
 import { useStore } from "vuex";
 import { computed } from "vue";
 import { defineComponent, ref } from "vue";
-import {Home, ChartLineArea ,UserBusiness, PeoplesTwo, History, Info} from '@icon-park/vue-next';
+import {
+  Home,
+  ChartLineArea,
+  UserBusiness,
+  PeoplesTwo,
+  History,
+  Info
+} from "@icon-park/vue-next";
 
 export default defineComponent({
   name: "Sidebar",
@@ -132,10 +139,10 @@ export default defineComponent({
       "border-gray-900 text-gray-500 hover:bg-gray-600 hover:bg-opacity-25 hover:text-gray-100"
     );
     const iconConfig = {
-      theme:"multi-color",
-      size:"26",
+      theme: "multi-color",
+      size: "26",
       "stroke-width": 3,
-      fill:['#fff' ,'#2F88FF' ,'#FFF' ,'#43CCF8']
+      fill: ["#fff", "#2F88FF", "#FFF", "#43CCF8"]
     };
     return {
       iconConfig,

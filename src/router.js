@@ -21,7 +21,11 @@ const router = createRouter({
       path: "/team",
       name: "Team",
       component: defineAsyncComponent(() => import("./views/Team.vue")),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
+      async beforeEnter(to, from, next) {
+        await store.dispatch("getInitData");
+        next();
+      }
     },
     {
       path: "/externals",
@@ -33,8 +37,8 @@ const router = createRouter({
       async beforeEnter(to, from, next) {
         await store.dispatch("getInitData");
         await store.dispatch("getExternalContributors");
-        next()
-      }      
+        next();
+      }
     },
     {
       path: "/about",
@@ -43,7 +47,7 @@ const router = createRouter({
       meta: { requiresAuth: false },
       async beforeEnter(to, from, next) {
         await store.dispatch("getInitData");
-        next()
+        next();
       }
     },
     {
@@ -53,9 +57,10 @@ const router = createRouter({
       meta: { requiresAuth: false },
       async beforeEnter(to, from, next) {
         await store.dispatch("getInitData");
-        next()
+        await store.dispatch("getExternalContributors");
+        next();
       }
-    },    
+    },
     {
       path: "/login",
       name: "Login",

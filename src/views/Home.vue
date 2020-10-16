@@ -11,26 +11,29 @@
     </h3>
     <div class="flex flex-wrap -mx-6" v-if="org && org.id">
       <OverviewCard title="Team Size" :count="org.membersWithRole.totalCount">
-        <PeoplesTwo v-bind="iconConfig" class="p-3 rounded-full bg-yellow-700"/>
+        <PeoplesTwo
+          v-bind="iconConfig"
+          class="p-3 rounded-full bg-yellow-700"
+        />
       </OverviewCard>
 
       <OverviewCard title="Total Repos" :count="org.repositories.totalCount">
-        <Cube v-bind="iconConfig" class="p-3 rounded-full bg-teal-700"/>
+        <Cube v-bind="iconConfig" class="p-3 rounded-full bg-teal-700" />
       </OverviewCard>
 
       <OverviewCard title="Total Stars" :count="getStars(org)">
-        <Star v-bind="iconConfig" class="p-3 rounded-full bg-orange-600"/>
+        <Star v-bind="iconConfig" class="p-3 rounded-full bg-orange-600" />
       </OverviewCard>
 
       <OverviewCard
         title="Total open Pull Requests"
         :count="getOpenPullRequests(org)"
       >
-        <BranchTwo v-bind="iconConfig" class="p-3 rounded-full bg-purple-600"/>
+        <BranchTwo v-bind="iconConfig" class="p-3 rounded-full bg-purple-600" />
       </OverviewCard>
 
       <OverviewCard title="Totalopen Issues" :count="getOpenissues(org)">
-        <Flag v-bind="iconConfig" class="p-3 rounded-full bg-pink-600"/>
+        <Flag v-bind="iconConfig" class="p-3 rounded-full bg-pink-600" />
       </OverviewCard>
     </div>
   </div>
@@ -45,7 +48,7 @@ import { computed, onMounted, ref } from "vue";
 
 // import crossfilter from 'crossfilter2';
 import OverviewCard from "../components/OverviewCard.vue";
-import {PeoplesTwo, Star,BranchTwo,Flag, Cube} from '@icon-park/vue-next';
+import { PeoplesTwo, Star, BranchTwo, Flag, Cube } from "@icon-park/vue-next";
 
 export default {
   name: "Home",
@@ -64,11 +67,11 @@ export default {
     const history = computed(() => store.state.history);
     const viewer = computed(() => store.state.viewer);
     const iconConfig = {
-      theme:"filled",
-      size:"32",
+      theme: "filled",
+      size: "32",
       "stroke-width": 4,
-      fill:['#fff' ,'#2F88FF' ,'#FFF' ,'#43CCF8']
-    };    
+      fill: ["#fff", "#2F88FF", "#FFF", "#43CCF8"]
+    };
     function getStars(org) {
       return (
         org.repositories.repos &&

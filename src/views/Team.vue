@@ -22,7 +22,6 @@
           />
         </div>
       </div>
-      {{ selectedItem }} - {{ searchTerm }}
       <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
         <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
           <table class="min-w-full leading-normal">
@@ -134,19 +133,8 @@ export default {
     const store = useStore();
     let selectedItem = ref("All");
     let searchTerm = ref("");
-    const allMembers = computed(() => {
-      const initial = store.getters.allMembers;
-      const sorted = Object.keys(initial)
-        .sort(
-          (a, b) =>
-            initial[b].followers.totalCount - initial[a].followers.totalCount
-        )
-        .reduce((sorted, key) => {
-          sorted[key] = initial[key];
-          return sorted;
-        }, {});
-      return sorted;
-    });
+    const allMembers = computed(() => store.getters.allMembers);
+
     let hasMembers = computed(() => {
       if (allMembers.value && Object.keys(allMembers.value).length > 0) {
         return true;
@@ -166,13 +154,9 @@ export default {
           }
         });
       }
-      console.log(filteredResult);
+      // console.log(filteredResult);
       return filteredResult;
     });
-    if (!hasMembers.value) {
-      console.log("getInitData", allMembers.value);
-      store.dispatch("getInitData");
-    }
     return {
       allMembers,
       filteredMembers,

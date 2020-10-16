@@ -4,9 +4,9 @@
       <button @click="resetAll">Reset all filters</button>
 
       <div class="flex flex-wrap -mx-2">
-        <div class="px-2 w-1/3">
+        <div class="px-2 w-1/4">
           <div
-            class="flex flex-wrap w-full sm:py-24 py-16 sm:px-10 px-6 relative"
+            class="flex flex-wrap w-full sm:py-16 py-8 sm:px-10 px-6 relative"
           >
             <div class="text-center relative z-10 w-full">
               <h2 class="text-m text-gray-900 font-medium title-font mb-2">
@@ -19,9 +19,9 @@
             </div>
           </div>
         </div>
-        <div class="px-2 w-1/3">
+        <div class="px-2 w-1/4">
           <div
-            class="flex flex-wrap w-full sm:py-24 py-16 sm:px-10 px-6 relative"
+            class="flex flex-wrap w-full sm:py-16 py-8 sm:px-10 px-6 relative"
           >
             <div class="text-center relative z-10 w-full">
               <h2 class="text-m text-gray-900 font-medium title-font mb-2">
@@ -34,9 +34,9 @@
             </div>
           </div>
         </div>
-        <div class="px-2 w-1/3">
+        <div class="px-2 w-1/4">
           <div
-            class="flex flex-wrap w-full sm:py-24 py-16 sm:px-10 px-6 relative"
+            class="flex flex-wrap w-full sm:py-16 py-8 sm:px-10 px-6 relative"
           >
             <div class="text-center relative z-10 w-full">
               <h2 class="text-m text-gray-900 font-medium title-font mb-2">
@@ -45,6 +45,21 @@
               <div
                 class="w-full h-full object-center block "
                 ref="typeRef"
+              ></div>
+            </div>
+          </div>
+        </div>
+        <div class="px-2 w-1/4">
+          <div
+            class="flex flex-wrap w-full sm:py-16 py-8 sm:px-10 px-6 relative"
+          >
+            <div class="text-center relative z-10 w-full">
+              <h2 class="text-m text-gray-900 font-medium title-font mb-2">
+                Filter by actor origin
+              </h2>
+              <div
+                class="w-full h-full object-center block "
+                ref="originRef"
               ></div>
             </div>
           </div>
@@ -85,15 +100,27 @@ export default {
     let allInteractions = ref(null);
     let dayOfWeekRef = ref(null);
     let typeRef = ref(null);
+    let originRef = ref(null);
     let allInteractionsRange = ref(null);
     let yearPie = ref(null);
     const store = useStore();
     const history = computed(() => store.state.history);
+    const allInternal = computed(() => {
+      const orgMembers = Object.keys(store.getters.allMembers);
+      const result = [
+        ...orgMembers,
+        ...store.state.alumniContributors,
+        ...store.state.botsContributors
+      ];
+      return result;
+    });
     // const parseDate = timeParse("%Y-%m-%d");
     const ndx = crossfilter(
       history.value.map(el => ({
         ...el,
         week: timeWeek(el.date),
+        actorOrigin:
+          allInternal.value.indexOf(el.actor) === -1 ? "external" : "internal",
         year: el.date.getFullYear()
       }))
     );
@@ -115,6 +142,8 @@ export default {
 
     const typeDim = ndx.dimension(d => d.type);
     const typeGroup = typeDim.group();
+    const originDim = ndx.dimension(d => d.actorOrigin);
+    const originGroup = originDim.group();
     const resetAll = function() {
       filterAll();
       renderAll();
@@ -142,7 +171,7 @@ export default {
 
       let allInteractionsChart = barChart(allInteractions.value)
         .width(allInteractions.value.containerWidth)
-        .height(600)
+        .height(400)
         .dimension(dateDim)
         .group(dayTotal, "Interactions")
         .centerBar(true)
@@ -192,10 +221,20 @@ export default {
         // Assign colors to each value in the x scale domain
         .ordinalColors(["#3182bd", "#6baed6", "#9ecae1", "#c6dbef", "#dadaeb"]);
 
+      const originChart = pieChart(originRef.value)
+        .width(originRef.value.clientWidth)
+        .height(originRef.value.clientWidth)
+        .group(originGroup)
+        .dimension(originDim)
+        // .label(d => d.key.split("Event")[0])
+        // Assign colors to each value in the x scale domain
+        .ordinalColors(["#3182bd", "#6baed6", "#9ecae1", "#c6dbef", "#dadaeb"]);
+
       rangeChart.render();
       yearlyChart.render();
       dayOfWeekChart.render();
       typeChart.render();
+      originChart.render();
       rangeChart.render();
       allInteractionsChart.render();
     });
@@ -203,6 +242,7 @@ export default {
       history,
       dayOfWeekRef,
       typeRef,
+      originRef,
       allInteractions,
       allInteractionsRange,
       yearPie,

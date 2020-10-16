@@ -40,7 +40,7 @@ const store = createStore({
       window.localStorage.setItem("token", token);
     },
     setHistory: (state, history) => {
-      state.history = history.map(el => ({...el, date: new Date(el.date)}));
+      state.history = history.map(el => ({ ...el, date: new Date(el.date) }));
     },
     setViewer: (state, viewer) => {
       state.viewer = viewer;
@@ -110,7 +110,7 @@ const store = createStore({
   actions: {
     login(context) {
       const authenticator = new Authenticator({
-        site_id: `${process.env.VUE_APP_NETLIFY_APP_ID || null}`,
+        site_id: `${process.env.VUE_APP_NETLIFY_APP_ID || null}`
       });
       authenticator.authenticate(
         { provider: "github", scope: "read:user, read:org" },
@@ -189,7 +189,7 @@ const store = createStore({
       }
     },
     getHistory(context) {
-      fetch("/results.json", {
+      return fetch("/results.json", {
         method: "GET",
         headers: {
           "Content-Type": "application/json"
@@ -210,7 +210,10 @@ const store = createStore({
         query.push(`-author:${el}`)
       );
       context.state.alumniContributors.map(el => query.push(`-author:${el}`));
-      gqlFetch(externalContributors(query.join(" "), null), store.state.token)
+      return gqlFetch(
+        externalContributors(query.join(" "), null),
+        store.state.token
+      )
         .then(({ search }) => {
           context.commit("setExternalContributors", search.nodes);
         })
@@ -297,11 +300,21 @@ const store = createStore({
           };
         }
       });
+      const sorted = Object.keys(concatResult)
+        .sort(
+          (a, b) =>
+            concatResult[b].followers.totalCount -
+            concatResult[a].followers.totalCount
+        )
+        .reduce((sortedElement, key) => {
+          sortedElement[concatResult[key].login] = concatResult[key];
+          return sortedElement;
+        }, {});
       // concatResult = concatResult.sort(
       //   (a, b) => b.followers.totalCount - a.followers.totalCount
       // );
       // concatResult.map((el) => (result[el.login] = el));
-      return concatResult;
+      return sorted;
     }
   }
 });

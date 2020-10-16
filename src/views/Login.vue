@@ -27,7 +27,7 @@ import { ChartLineArea } from "@icon-park/vue-next";
 export default {
   name: "Login",
   components: {
-    ChartLineArea,
+    ChartLineArea
   },
   setup() {
     const store = useStore();
